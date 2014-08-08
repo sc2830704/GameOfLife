@@ -33,7 +33,7 @@ public class Map
 			
 		}
 	}
-	public void show(int[][] a)
+	public void show(int[][] a,int gen)
 	{
 		AllCreNum=0;
 		for(int r=0;r<creature.length;r++)
@@ -42,15 +42,18 @@ public class Map
 			{
 				if(creature[r][c]==1||creature[r][c]==3)
 				{
-					System.out.printf("@");
+					System.out.printf("@ ");
 					AllCreNum++;
 				}
 				else
-				System.out.printf("-");	
+				System.out.printf("- ");	
 			}
 			System.out.println("");
 		}
-	System.out.printf("生物數量:"+AllCreNum);	
+	System.out.printf(" Generation:"+gen);
+	System.out.printf(" Creature:"+AllCreNum);
+	System.out.printf(" Die:"+Creature.die);
+	System.out.printf(" Born:"+Creature.born+"\n");
 	}
 	
 }

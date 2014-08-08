@@ -11,7 +11,8 @@ import java.util.Random;
 public class Creature 
 {
 	int[][] creature;			//當代生物資訊
-	int[][] creTmp = new int[Map.BORDER][Map.BORDER];	//下一代生物資訊
+	int[][] creatureTmp = new int[Map.BORDER][Map.BORDER];	//下一代生物資訊
+	static int die=0,born=0;
 	Random rand = new Random();
 	public Creature (int[][] creature)
 	{
@@ -20,7 +21,7 @@ public class Creature
 		{
 			for(int c=0;c<creature[r].length;c++)
 			{
-				creTmp[r][c]=creature[r][c];
+				creatureTmp[r][c]=creature[r][c];
 			}
 		}	
 	}
@@ -56,9 +57,10 @@ public class Creature
 			R=rand.nextInt(3)-1;			//亂數得R=-1~1	
 			C=rand.nextInt(3)-1;			//亂數得C=-1~1
 			
-			if(r+R>=0 && r+R<=border && c+C>=0 && c+C<=border && creature[r+R][c+C]==0 )	//邊界內，該世代無生物的點生成新生物
+			if(r+R>=0 && r+R<=border && c+C>=0 && c+C<=border && creature[r+R][c+C]==0 && creatureTmp[r+R][c+C]==0)
+			//邊界內，該世代無生物的點、下一世代無生物生成的點生成新生物
 			{
-				creTmp[r+R][c+C]=1;        
+				creatureTmp[r+R][c+C]=1;        
 				flag++;
 			}
 			
@@ -70,13 +72,17 @@ public class Creature
 	//1.先判斷下個世代會消失的生物    規則:附近生物數量>=3 
 	//2.再判斷會生成新生物的點           規則:該世代附近生物數量=1，生成的點為該世代沒有生物的點
 	{						
-		
+		die=0;
+		born=0;
 		for(int r=0;r<creature.length;r++)			//1.	
 		{
 			for(int c=0;c<creature[r].length;c++)
 			{
-					if( liveNum(r,c,Map.BORDER-1,creature)>=3 )		//判斷附近生物數量，如果大於3則該生物死亡，creTmp設為0
-						creTmp[r][c]=0;
+					if( (liveNum(r,c,Map.BORDER-1,creature)>=3)  && creature[r][c]==1 )		//判斷附近生物數量，如果大於3則該生物死亡，creTmp設為0
+					{	
+						creatureTmp[r][c]=0;
+						die++;
+					}
 			}
 		}	
 		for(int r=0;r<creature.length;r++)			//2.
@@ -84,7 +90,11 @@ public class Creature
 			for(int c=0;c<creature[r].length;c++)
 			{
 				if( (liveNum(r,c,Map.BORDER-1,creature)==1) && creature[r][c]==1 )		//判斷附近生物數量，如果等於1則繁衍
-					grow(r,c,Map.BORDER-1);				
+				{
+					grow(r,c,Map.BORDER-1);	
+					born++;
+				}
+				
 			}
 		}	
 
@@ -93,7 +103,7 @@ public class Creature
 		{
 			for(int c=0;c<creature[r].length;c++)
 			{
-						creature[r][c]=creTmp[r][c];           
+						creature[r][c]=creatureTmp[r][c];           
 			}
 		}
 		
